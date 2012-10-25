@@ -52,10 +52,11 @@ module Guard
         file = File.join( options[:watchdir].to_s,file ) if options[:watchdir]
 
         if options[:syntax_check]
-          parser_messages = `puppet parser validate #{file} --color=false`.split("\n")
+          if options[:syntax_check]
+          parser_messages = `puppet parser validate  #{file} --color=false 2>&1`.split("\n")
           parser_messages.reject! { |s| s =~ /puppet help parser validate/ }
-          parser_messages.map! { |s| s.gsub 'err: Could not parse for environment production:', '' }
-
+          parser_messages.map! { |s| s.gsub 'Error: Could not parse for environment production:', '' }
+          
           messages += prepend_filename(parser_messages, file)
         end
 
